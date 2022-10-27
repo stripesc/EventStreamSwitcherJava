@@ -1,24 +1,28 @@
+import org.json.JSONObject;
+
 import java.awt.*;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.awt.event.KeyEvent;
+import org.json.*;
 
 public class switcher {
     public static ArrayList<String> streamers = getStreamerArray("streamers.txt");
+    public static ArrayList<String> streamerNames = getStreamerArrayNoURL("streamers.txt");
     public static int timesLooped = 0;
 
-    public static void main(String[] args) throws InterruptedException, AWTException {
-//        Robot wallE = new Robot();
-//        wallE.mouseMove(500,200);
-//        System.out.println(wallE.getPixelColor(500,200));
+    public static void main(String[] args) throws InterruptedException, AWTException, IOException {
+        AccessToken token = getToken();
         while (true){
             for (int i = 0; i < streamers.size(); i++){
-                getStream(streamers.get(i));
-                Thread.sleep(10000);
+                if (isLive(streamerNames.get(i), token)){
+                    getStream(streamers.get(i));
+                    Thread.sleep(10000);
+                }
             }
             timesLooped++;
             System.out.println(timesLooped);
@@ -72,4 +76,77 @@ public class switcher {
         }
         return streamers;
     }
+
+    public static ArrayList<String> getStreamerArrayNoURL(String fileName) {
+        ArrayList<String> streamers = new ArrayList<String>();
+        try {
+            File streamersFile = new File(fileName);
+            Scanner fileReader = new Scanner(streamersFile);
+            while(fileReader.hasNextLine()){
+                streamers.add(fileReader.nextLine());
+            }
+        }
+        catch(FileNotFoundException error){
+            System.out.println("Error: " + error + " during file read");
+        }
+        return streamers;
+    }
+
+// ------------------------ CURL STUFF ---------------------------
+    public static AccessToken getToken() throws IOException {
+        String clientID = "";
+        String clientSec = "";
+        ArrayList<Character> stringHolder = new ArrayList<>();
+        String command = "curl -X POST \"https://id.twitch.tv/oauth2/token\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"client_id="+clientID+"&client_secret="+clientSec+"&grant_type=client_credentials\" --ssl-no-revoke";
+        Process process = Runtime.getRuntime().exec(command);
+        InputStreamReader out = new InputStreamReader((process.getInputStream()));
+        while (!out.ready()){
+//            Hacky wait to wait unitl its ready to read
+        }
+        while (out.ready()){
+            stringHolder.add((char)(out.read()));
+        }
+        String output = "";
+        for (int i = 0; i < stringHolder.size(); i++){
+            output += stringHolder.get(i);
+        }
+        JSONObject response = new JSONObject(output);
+
+        try{
+            response.get("status").equals(400);
+            return null;
+        }
+        catch(Exception e){
+            System.out.println("Good request");
+            AccessToken token = new AccessToken(response, clientID);
+            return token;
+        }
+    }
+
+    public static boolean isLive(String name, AccessToken token) throws IOException, InterruptedException {
+        JSONObject stream = getStreamData(name, token);
+        System.out.println(!stream.get("data").toString().equals("[]"));
+        return !stream.get("data").toString().equals("[]");
+    }
+
+    public static JSONObject getStreamData(String streamName, AccessToken token) throws IOException {
+        ArrayList<Character> stringHolder = new ArrayList<>();
+        String command = "curl -X GET \"https://api.twitch.tv/helix/streams?user_login="+streamName+"\" -H \"Authorization: "+token.toString()+"\" -H \"Client-Id: "+token.clientID+"\"";
+        System.out.println(command);
+        Process process = Runtime.getRuntime().exec(command);
+        InputStreamReader  out = new InputStreamReader((process.getInputStream()));
+        while (!out.ready()){
+//            Hacky wait to wait unitl its ready to read
+        }
+        while (out.ready()){
+            stringHolder.add((char)(out.read()));
+        }
+        String output = "";
+        for (int i = 0; i < stringHolder.size(); i++){
+            output += stringHolder.get(i);
+        }
+        System.out.println(new JSONObject(output));
+        return new JSONObject(output);
+    }
+
 }
