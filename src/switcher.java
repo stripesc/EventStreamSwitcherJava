@@ -99,7 +99,7 @@ public class switcher {
         Process process = Runtime.getRuntime().exec(command);
         InputStreamReader out = new InputStreamReader((process.getInputStream()));
         while (!out.ready()){
-//            Hacky wait to wait unitl its ready to read
+//            Hacky wait to wait until it's ready to read
         }
         while (out.ready()){
             stringHolder.add((char)(out.read()));
@@ -116,8 +116,7 @@ public class switcher {
         }
         catch(Exception e){
             System.out.println("Good request");
-            AccessToken token = new AccessToken(response, clientID);
-            return token;
+            return new AccessToken(response, clientID);
         }
     }
 
@@ -134,7 +133,7 @@ public class switcher {
         Process process = Runtime.getRuntime().exec(command);
         InputStreamReader  out = new InputStreamReader((process.getInputStream()));
         while (!out.ready()){
-//            Hacky wait to wait unitl its ready to read
+//            Hacky wait to wait until it's ready to read
         }
         while (out.ready()){
             stringHolder.add((char)(out.read()));
