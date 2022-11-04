@@ -9,16 +9,22 @@ import java.awt.event.KeyEvent;
 import org.json.*;
 
 public class switcher {
-    public static ArrayList<String> streamers = getStreamerArray("streamers.txt");
-    public static ArrayList<String> streamerNames = getStreamerArrayNoURL("streamers.txt");
+    public static ArrayList<String> streamers;
+    public static ArrayList<String> streamerNames;
     public static int timesLooped = 0;
 
     public static void main(String[] args) throws InterruptedException, AWTException, IOException {
         AccessToken token = getToken();
+        Robot wallE = new Robot();
+        matureButton mCheckr = new matureButton(new Point(-1063, 604), new Point(-959, 606), new Point(-1063, 624), new Point(-958, 622), new Color(157, 38, 249));
         while (true){
+            streamers = getStreamerArray("streamers.txt");
+            streamerNames = getStreamerArrayNoURL("streamers.txt");
             for (int i = 0; i < streamers.size(); i++){
                 if (isLive(streamerNames.get(i), token)){
-                    getStream(streamers.get(i));
+                    getStream(streamers.get(i), wallE);
+                    Thread.sleep(5000);
+                    mCheckr.manageButton();
                     Thread.sleep(10000);
                 }
             }
@@ -27,9 +33,8 @@ public class switcher {
         }
     }
 
-    public static void getStream(String name) throws InterruptedException{
+    public static void getStream(String name, Robot wallE) throws InterruptedException{
         try{
-            Robot wallE = new Robot();
             wallE.keyPress(17);
             wallE.keyPress('L');
             wallE.keyRelease('L');
@@ -50,12 +55,7 @@ public class switcher {
             Thread.sleep(100);
             wallE.keyPress(KeyEvent.VK_ENTER);
             wallE.keyRelease(KeyEvent.VK_ENTER);
-        }
-        catch(AWTException e){
-            System.out.println("Not enough access");
-            System.out.println(e.getMessage());
-        }
-        catch(IllegalArgumentException e){
+        } catch(IllegalArgumentException e){
             System.out.println("Bad character code");
         }
     }
@@ -115,21 +115,21 @@ public class switcher {
             return null;
         }
         catch(Exception e){
-            System.out.println("Good request");
+//            System.out.println("Good request");
             return new AccessToken(response, clientID);
         }
     }
 
     public static boolean isLive(String name, AccessToken token) throws IOException, InterruptedException {
         JSONObject stream = getStreamData(name, token);
-        System.out.println(!stream.get("data").toString().equals("[]"));
+//        System.out.println(!stream.get("data").toString().equals("[]"));
         return !stream.get("data").toString().equals("[]");
     }
 
     public static JSONObject getStreamData(String streamName, AccessToken token) throws IOException {
         ArrayList<Character> stringHolder = new ArrayList<>();
         String command = "curl -X GET \"https://api.twitch.tv/helix/streams?user_login="+streamName+"\" -H \"Authorization: "+token.toString()+"\" -H \"Client-Id: "+token.clientID+"\" --ssl-no-revoke";
-        System.out.println(command);
+//        System.out.println(command);
         Process process = Runtime.getRuntime().exec(command);
         InputStreamReader  out = new InputStreamReader((process.getInputStream()));
         while (!out.ready()){
@@ -142,8 +142,12 @@ public class switcher {
         for (int i = 0; i < stringHolder.size(); i++){
             output += stringHolder.get(i);
         }
-        System.out.println(new JSONObject(output));
+//        System.out.println(new JSONObject(output));
         return new JSONObject(output);
+    }
+
+    public static void checkMature(Robot wallE){
+
     }
 
 }
