@@ -1,5 +1,3 @@
-import org.json.JSONObject;
-
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -94,8 +92,8 @@ public class switcher {
 
 // ------------------------ CURL STUFF ---------------------------
     public static AccessToken getToken() throws IOException {
-        String clientID = "";
-        String clientSec = "";
+        String clientID = "vnosi1c3vrll8eiy5qyu5fv3tblpp5";
+        String clientSec = "7gtdm05e262dy6ve6tnfabnjahmbt9";
         ArrayList<Character> stringHolder = new ArrayList<>();
         String command = "curl -X POST \"https://id.twitch.tv/oauth2/token\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"client_id="+clientID+"&client_secret="+clientSec+"&grant_type=client_credentials\" --ssl-no-revoke";
         Process process = Runtime.getRuntime().exec(command);
@@ -131,7 +129,7 @@ public class switcher {
 
     public static JSONObject getStreamData(String streamName, AccessToken token) throws IOException {
         ArrayList<Character> stringHolder = new ArrayList<>();
-        String command = "curl -X GET \"https://api.twitch.tv/helix/streams?user_login="+streamName+"\" -H \"Authorization: "+token.toString()+"\" -H \"Client-Id: "+token.clientID+"\"";
+        String command = "curl -X GET \"https://api.twitch.tv/helix/streams?user_login="+streamName+"\" -H \"Authorization: "+token.toString()+"\" -H \"Client-Id: "+token.clientID+"\" --ssl-no-revoke";
         System.out.println(command);
         Process process = Runtime.getRuntime().exec(command);
         InputStreamReader  out = new InputStreamReader((process.getInputStream()));
