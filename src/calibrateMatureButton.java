@@ -14,21 +14,6 @@ class calibrateMatureButton {
                         "new Point("+corners[3].x+", "+corners[3].y+"), " +
                         "new Color("+base.getRed()+", "+base.getGreen()+", "+base.getBlue()+"));"
         );
-//        matureButton checkr = new matureButton(corners[0], corners[1], corners[2], corners[3], new Color(157,38,249));
-//        checkr.manageButton();
-//        Robot rob = new Robot();
-//        Color c1 = rob.getPixelColor(corners[0].x,corners[0].y);
-//        Color c2 = rob.getPixelColor(corners[1].x,corners[1].y);
-//        Color c3 = rob.getPixelColor(corners[2].x,corners[2].y);
-//        Color c4 = rob.getPixelColor(corners[3].x,corners[3].y);
-//        System.out.println(corners[0]);
-//        System.out.println(corners[1]);
-//        System.out.println(corners[2]);
-//        System.out.println(corners[3]);
-//        System.out.println(c1);
-//        System.out.println(c2);
-//        System.out.println(c3);
-//        System.out.println(c4);
     }
 
     public static Point[] calibrate() throws InterruptedException {

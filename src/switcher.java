@@ -92,8 +92,8 @@ public class switcher {
 
 // ------------------------ CURL STUFF ---------------------------
     public static AccessToken getToken() throws IOException {
-        String clientID = "vnosi1c3vrll8eiy5qyu5fv3tblpp5";
-        String clientSec = "7gtdm05e262dy6ve6tnfabnjahmbt9";
+        String clientID = "YOUR_BOT_ID_HERE";
+        String clientSec = "YOUR_BOT_SECRET_HERE";
         ArrayList<Character> stringHolder = new ArrayList<>();
         String command = "curl -X POST \"https://id.twitch.tv/oauth2/token\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"client_id="+clientID+"&client_secret="+clientSec+"&grant_type=client_credentials\" --ssl-no-revoke";
         Process process = Runtime.getRuntime().exec(command);
