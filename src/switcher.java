@@ -15,6 +15,10 @@ public class switcher {
 
     public static void main(String[] args) throws InterruptedException, AWTException, IOException {
         AccessToken token = getToken();
+        if (!token.isGood){
+            System.out.println("Bad token, exiting program");
+            System.exit(400);
+        }
         Robot wallE = new Robot();
         matureButton mCheckr = new matureButton(new Point(-1063, 604), new Point(-959, 606), new Point(-1063, 624), new Point(-958, 622), new Color(157, 38, 249));
         while (true){
@@ -92,32 +96,33 @@ public class switcher {
 
 // ------------------------ CURL STUFF ---------------------------
     public static AccessToken getToken() throws IOException {
-        String clientID = "YOUR_BOT_ID_HERE";
-        String clientSec = "YOUR_BOT_SECRET_HERE";
-        ArrayList<Character> stringHolder = new ArrayList<>();
-        String command = "curl -X POST \"https://id.twitch.tv/oauth2/token\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"client_id="+clientID+"&client_secret="+clientSec+"&grant_type=client_credentials\" --ssl-no-revoke";
-        Process process = Runtime.getRuntime().exec(command);
-        InputStreamReader out = new InputStreamReader((process.getInputStream()));
-        while (!out.ready()){
-//            Hacky wait to wait until it's ready to read
-        }
-        while (out.ready()){
-            stringHolder.add((char)(out.read()));
-        }
-        String output = "";
-        for (int i = 0; i < stringHolder.size(); i++){
-            output += stringHolder.get(i);
-        }
-        JSONObject response = new JSONObject(output);
-
-        try{
-            response.get("status").equals(400);
-            return null;
-        }
-        catch(Exception e){
-//            System.out.println("Good request");
-            return new AccessToken(response, clientID);
-        }
+        return (new AccessToken());
+//        String clientID = "YOUR_BOT_ID_HERE";
+//        String clientSec = "YOUR_BOT_SECRET_HERE";
+//        ArrayList<Character> stringHolder = new ArrayList<>();
+//        String command = "curl -X POST \"https://id.twitch.tv/oauth2/token\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"client_id="+clientID+"&client_secret="+clientSec+"&grant_type=client_credentials\" --ssl-no-revoke";
+//        Process process = Runtime.getRuntime().exec(command);
+//        InputStreamReader out = new InputStreamReader((process.getInputStream()));
+//        while (!out.ready()){
+////            Hacky wait to wait until it's ready to read
+//        }
+//        while (out.ready()){
+//            stringHolder.add((char)(out.read()));
+//        }
+//        String output = "";
+//        for (int i = 0; i < stringHolder.size(); i++){
+//            output += stringHolder.get(i);
+//        }
+//        JSONObject response = new JSONObject(output);
+//
+//        try{
+//            response.get("status").equals(400);
+//            return null;
+//        }
+//        catch(Exception e){
+////            System.out.println("Good request");
+//            return new AccessToken(response, clientID);
+//        }
     }
 
     public static boolean isLive(String name, AccessToken token) throws IOException, InterruptedException {
